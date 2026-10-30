@@ -1,0 +1,252 @@
+@import "tailwindcss";
+
+/* ─── Custom Theme ────────────────────────────────── */
+@theme {
+  /* Brand Colors */
+  --color-primary: #0B5ED7;
+  --color-primary-hover: #094BAA;
+  --color-primary-light: #e8effa;
+  --color-accent: #D4AF37;
+  --color-accent-hover: #b8921f;
+  --color-accent-light: #fdf8e7;
+  --color-dark: #111111;
+  --color-dark-card: #1a1a1a;
+
+  /* Fonts */
+  --font-sans: var(--font-inter), 'Inter', system-ui, sans-serif;
+  --font-poppins: var(--font-poppins), 'Poppins', system-ui, sans-serif;
+
+  /* Transitions */
+  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ─── Base Layer ──────────────────────────────────── */
+@layer base {
+  *, *::before, *::after {
+    @apply box-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply text-gray-800 bg-white antialiased;
+    font-family: var(--font-sans);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-poppins);
+    @apply font-semibold leading-tight;
+  }
+
+  img {
+    @apply max-w-full;
+  }
+}
+
+/* ─── Utility Layer ───────────────────────────────── */
+@layer utilities {
+  /* Layout */
+  .section-padding {
+    @apply py-16 md:py-24;
+  }
+
+  .container-custom {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  /* Cards */
+  .card {
+    @apply bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden;
+  }
+
+  .card-hover {
+    @apply transition-all duration-300 hover:shadow-xl hover:-translate-y-1;
+  }
+
+  /* Buttons */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold text-white transition-all duration-200;
+    background-color: var(--color-primary);
+  }
+
+  .btn-primary:hover {
+    background-color: var(--color-primary-hover);
+    @apply shadow-lg -translate-y-0.5;
+  }
+
+  .btn-accent {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all duration-200;
+    background-color: var(--color-accent);
+    color: var(--color-dark);
+  }
+
+  .btn-accent:hover {
+    background-color: var(--color-accent-hover);
+    @apply shadow-lg -translate-y-0.5;
+  }
+
+  .btn-outline {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold border-2 transition-all duration-200;
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+
+  .btn-outline:hover {
+    background-color: var(--color-primary);
+    @apply text-white shadow-lg -translate-y-0.5;
+  }
+
+  .btn-outline-white {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold border-2 border-white text-white transition-all duration-200;
+  }
+
+  .btn-outline-white:hover {
+    @apply bg-white shadow-lg -translate-y-0.5;
+    color: var(--color-primary);
+  }
+
+  /* Section Headings */
+  .section-tag {
+    @apply inline-block text-sm font-semibold tracking-widest uppercase mb-3;
+    color: var(--color-accent);
+  }
+
+  .section-title {
+    @apply text-3xl md:text-4xl font-bold mb-4;
+    color: var(--color-primary);
+    font-family: var(--font-poppins);
+  }
+
+  .section-subtitle {
+    @apply text-gray-500 text-lg max-w-2xl;
+  }
+
+  /* Gold accent line */
+  .accent-line {
+    @apply h-1 w-16 rounded-full mb-8;
+    background-color: var(--color-accent);
+  }
+
+  /* Gradient backgrounds */
+  .gradient-primary {
+    background: linear-gradient(135deg, var(--color-primary) 0%, #1a5cbf 100%);
+  }
+
+  .gradient-dark {
+    background: linear-gradient(135deg, var(--color-dark) 0%, var(--color-primary) 100%);
+  }
+
+  /* Text gradient */
+  .text-gradient {
+    background: linear-gradient(135deg, var(--color-primary), #1a5cbf);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* Scrollbar */
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* Form inputs */
+  .form-input {
+    @apply w-full px-4 py-3 rounded-xl border border-gray-200 text-gray-800 bg-white transition-all duration-200 outline-none;
+    font-family: var(--font-sans);
+  }
+
+  .form-input:focus {
+    border-color: var(--color-primary);
+    @apply ring-4;
+    --tw-ring-color: rgb(11 61 145 / 0.1);
+  }
+
+  .form-label {
+    @apply block text-sm font-semibold text-gray-700 mb-2;
+  }
+
+  /* Status badges */
+  .badge-pending {
+    @apply px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800;
+  }
+
+  .badge-approved {
+    @apply px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800;
+  }
+
+  .badge-rejected {
+    @apply px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-800;
+  }
+}
+
+/* ─── Animations ──────────────────────────────────── */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes shimmer {
+  from { background-position: -200% 0; }
+  to { background-position: 200% 0; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes scrollLeft {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-scroll-left {
+  animation: scrollLeft 30s linear infinite;
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* ─── WhatsApp Button ─────────────────────────────── */
+.whatsapp-btn {
+  @apply fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-2xl transition-all duration-300;
+  background-color: #25D366;
+}
+
+.whatsapp-btn:hover {
+  @apply scale-110 shadow-2xl;
+  background-color: #128C7E;
+}

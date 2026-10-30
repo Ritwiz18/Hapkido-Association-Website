@@ -1,0 +1,248 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Auth ─────────────────────────────────────────────────────
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+  DISTRICT_ADMIN
+  ACADEMY_ADMIN
+  COACH
+  VIEWER
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      Role     @default(VIEWER)
+  district  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ─── Status Enums ─────────────────────────────────────────────
+enum Status {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum Level {
+  DISTRICT
+  STATE
+  NATIONAL
+  INTERNATIONAL
+}
+
+enum EventStatus {
+  UPCOMING
+  ONGOING
+  COMPLETED
+  CANCELLED
+}
+
+// ─── Player ───────────────────────────────────────────────────
+model Player {
+  id             String   @id @default(cuid())
+  registrationId String   @unique
+  fullName       String
+  dob            DateTime?
+  gender         String?
+  district       String
+  academyId      String?
+  academy        Academy? @relation(fields: [academyId], references: [id])
+  guardianName   String?
+  phone          String
+  email          String?
+  address        String?
+  photo          String?
+  aadhaarDoc     String?
+  medicalCert    String?
+  beltLevel      String   @default("White Belt")
+  membershipType String   @default("Regular")
+  status         Status   @default(PENDING)
+  achievements   String[]
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+// ─── Coach ────────────────────────────────────────────────────
+model Coach {
+  id             String   @id @default(cuid())
+  registrationId String   @unique
+  fullName       String
+  dob            DateTime?
+  gender         String?
+  district       String
+  academyId      String?
+  academy        Academy? @relation(fields: [academyId], references: [id])
+  phone          String
+  email          String?
+  address        String?
+  qualification  String?
+  experience     Int?
+  blackBeltLevel String?
+  certificates   String[]
+  resumeDoc      String?
+  photo          String?
+  status         Status   @default(PENDING)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+// ─── Academy ──────────────────────────────────────────────────
+model Academy {
+  id             String   @id @default(cuid())
+  registrationId String   @unique
+  name           String
+  ownerName      String
+  address        String
+  district       String
+  phone          String
+  email          String?
+  logo           String?
+  photos         String[]
+  documents      String[]
+  mapsLink       String?
+  status         Status   @default(PENDING)
+  players        Player[]
+  coaches        Coach[]
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+// ─── News ─────────────────────────────────────────────────────
+model News {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  description String
+  content     String?
+  image       String?
+  category    String   @default("General")
+  published   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ─── Event ────────────────────────────────────────────────────
+model Event {
+  id               String      @id @default(cuid())
+  title            String
+  slug             String      @unique
+  description      String
+  date             DateTime
+  endDate          DateTime?
+  venue            String
+  image            String?
+  category         String      @default("Tournament")
+  status           EventStatus @default(UPCOMING)
+  registrationLink String?
+  gallery          String[]
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+}
+
+// ─── Gallery ──────────────────────────────────────────────────
+model GalleryAlbum {
+  id          String         @id @default(cuid())
+  title       String
+  description String?
+  coverImage  String?
+  images      GalleryImage[]
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+}
+
+model GalleryImage {
+  id        String        @id @default(cuid())
+  albumId   String?
+  album     GalleryAlbum? @relation(fields: [albumId], references: [id], onDelete: SetNull)
+  url       String
+  caption   String?
+  album_str String?       @default("General")  // flat string album name for simple use
+  createdAt DateTime      @default(now())
+}
+
+// ─── Achievement ──────────────────────────────────────────────
+model Achievement {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  level       String   @default("NATIONAL")
+  category    String   @default("Player")
+  year        Int
+  playerName  String
+  medal       String?
+  image       String?
+  createdAt   DateTime @default(now())
+}
+
+// ─── Download ─────────────────────────────────────────────────
+model Download {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  category    String   @default("Form")
+  fileUrl     String
+  fileName    String
+  fileSize    String?
+  createdAt   DateTime @default(now())
+}
+
+// ─── Contact ──────────────────────────────────────────────────
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  subject   String?
+  message   String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+// ─── Site Settings ────────────────────────────────────────────
+model SiteSettings {
+  id               String @id @default("singleton")
+  totalPlayers     Int    @default(500)
+  totalAcademies   Int    @default(45)
+  districtsCovered Int    @default(13)
+  certifiedCoaches Int    @default(60)
+  blackBeltHolders Int    @default(85)
+  nationalMedals   Int    @default(150)
+  presidentName    String @default("Sri Rajan Negi")
+  presidentMessage String @default("As President of the Uttarakhand Hapkido Association, I welcome you to our official platform. Our mission is to nurture champions and spread the noble art of Hapkido across every district of Uttarakhand.")
+  secretaryName    String @default("Sri Vikram Rawat")
+  secretaryMessage String @default("The Association is committed to transparent governance, athlete welfare, and promoting Hapkido at all levels — from grassroots to national competitions.")
+  address          String @default("Sports Complex, Rajpur Road, Dehradun, Uttarakhand - 248001")
+  phone            String @default("+91 98765 43210")
+  email            String @default("info@ushahapkido.org")
+  facebook         String @default("#")
+  instagram        String @default("#")
+  youtube          String @default("#")
+  whatsapp         String @default("+919876543210")
+  foundedYear      Int    @default(2010)
+  tagline          String @default("Discipline • Strength • Respect")
+}
+
+// ─── Audit Log ────────────────────────────────────────────────
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  action    String
+  entity    String
+  entityId  String?
+  details   String?
+  createdAt DateTime @default(now())
+}
